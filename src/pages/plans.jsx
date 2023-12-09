@@ -18,7 +18,8 @@ const PlansPage = () => {
 
         try {
 
-            const res = await fetch("http://localhost:4000/auth/checkout", {
+            const res = await fetch("https://frail-clam-shoe.cyclic.app/auth/checkout", {
+            // const res = await fetch("http://localhost:4000/auth/checkout", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
