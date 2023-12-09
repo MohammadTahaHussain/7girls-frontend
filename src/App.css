@@ -1,0 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
+
+* {
+  font-family: 'Poppins', sans-serif;
+}
+
+.bg-signup {
+  background-image: url("https://7girlsclub.com/static/media/sgimg.c9e0c1267737acaf429d.png");
+}
+
+.bg-2, .bg-3{
+  background-image: url('./assets/images/bg-2.png');
+}
