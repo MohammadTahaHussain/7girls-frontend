@@ -1,5 +1,5 @@
 import '../App.css'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Button from '../components/button'
 import { Link } from 'react-router-dom'
 import { FaFacebookF, FaInstagram } from "react-icons/fa";
@@ -9,7 +9,7 @@ import { getDownloadURL, uploadBytes, ref } from "firebase/storage"
 import { collection, addDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-
+import { onAuthStateChanged } from 'firebase/auth';
 
 const SignupPage = () => {
     const [name, setName] = useState('')
@@ -23,9 +23,14 @@ const SignupPage = () => {
 
     const submit = async (e) => {
         e.preventDefault()
-        
+
+        if (!image.length > 0) {
+            return false
+        }
+
+
         createUserWithEmailAndPassword(auth, email, password)
-        .then(async (userCredential) => {
+            .then(async (userCredential) => {
                 let imageName = `profile/${image[0].name}${Math.random()}`
                 let imageRef = ref(storage, imageName)
                 let uploaded = await uploadBytes(imageRef, image[0])
@@ -56,6 +61,19 @@ const SignupPage = () => {
             });
 
     }
+
+
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                navigate('/plans')
+            } else {
+                // User is signed out
+                // ...
+            }
+        });
+    }, [])
+
 
     return (
         <div>

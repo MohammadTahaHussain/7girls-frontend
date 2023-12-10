@@ -3,11 +3,12 @@ import { useLocation } from 'react-router-dom'
 import { db, auth } from '../configs/firebase'
 import { onAuthStateChanged } from 'firebase/auth'
 import { collection, query, where, onSnapshot, doc, updateDoc } from "firebase/firestore";
-
+import { useNavigate } from 'react-router-dom';
 
 const Success = () => {
   const location = useLocation()
   const [user, setUser] = useState(null)
+  const navigate = useNavigate()
 
   useEffect(() => {
     const session_id = location.search?.split("=")[1]
@@ -32,15 +33,19 @@ const Success = () => {
           const data = users[0]
           const saveData = async () => {
             const docRef = doc(db, "users", data.id);
-            await updateDoc(docRef, {
-              membership: {
-                status: true,
-                plan: plan.slice(0, -4),
-                session_id: session_id
-              }
-            });
+            if (session_id?.length > 10 && uid?.length > 10) {
+              await updateDoc(docRef, {
+                membership: {
+                  status: true,
+                  plan: plan.slice(0, -4),
+                  session_id: session_id
+                }
+              });
+            }
           }
-          saveData()
+          saveData().then(() => {
+            navigate("/members")
+          })
         });
         // ...
       } else {

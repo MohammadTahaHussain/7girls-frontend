@@ -63,7 +63,7 @@ const MembersPage = () => {
                             <div class="max-w-md mx-auto bg-black rounded-xl shadow-md overflow-hidden md:max-w-2xl">
                                 <div class="md:flex">
                                     <div class="md:shrink-0">
-                                        <img class="h-48 w-full object-cover md:h-full md:w-48" src={val?.data?.profile}/>
+                                        <img class="h-48 w-full object-cover md:h-full md:w-48" src={val?.data?.profile} />
                                     </div>
                                     <div class="p-8">
                                         <div class="uppercase tracking-wide text-sm font-semibold text-white">{val?.data?.Name}</div>

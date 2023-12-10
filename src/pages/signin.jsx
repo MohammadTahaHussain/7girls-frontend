@@ -1,18 +1,20 @@
 import '../App.css'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Button from '../components/button'
 import { Link, useNavigate } from 'react-router-dom'
 import { FaFacebookF, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../configs/firebase'
+import { onAuthStateChanged } from 'firebase/auth';
+
 
 const SignInPage = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
 
     const navigate = useNavigate()
-    
+
     const submit = (e) => {
         e.preventDefault()
         signInWithEmailAndPassword(auth, email, password)
@@ -28,6 +30,21 @@ const SignInPage = () => {
                 const errorMessage = error.message;
             });
     }
+
+    
+
+
+
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                navigate('/plans')
+            } else {
+                // User is signed out
+                // ...
+            }
+        });
+    }, [])
 
     return (
         <div>

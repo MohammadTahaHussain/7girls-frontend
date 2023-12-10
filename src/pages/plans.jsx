@@ -6,9 +6,11 @@ import { onAuthStateChanged } from 'firebase/auth'
 import { useEffect, useState } from "react"
 import { collection, query, where, onSnapshot, doc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../configs/firebase"
+import { useNavigate } from "react-router-dom"
 
 const PlansPage = () => {
     const [user, setUser] = useState(null)
+    const navigate = useNavigate()
 
     const name = "ITEMNAME";
     const TotalPrice = 50;
@@ -18,8 +20,8 @@ const PlansPage = () => {
 
         try {
 
-            const res = await fetch("https://frail-clam-shoe.cyclic.app/auth/checkout", {
-            // const res = await fetch("http://localhost:4000/auth/checkout", {
+            const res = await fetch("http://localhost:3002/auth/checkout", {
+                // const res = await fetch("http://localhost:4000/auth/checkout", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -30,7 +32,7 @@ const PlansPage = () => {
                             quantity: 1,
                             price: price,
                             name: plan,
-                            uid: user?.uid
+                            uid: user?.data?.uid
                         },
                     ],
                 }),
@@ -54,7 +56,8 @@ const PlansPage = () => {
                 return true
             }
             // saveData().then(() => {
-                window.location = data.url;
+
+            window.location = data.url;
             // })
 
 
@@ -69,7 +72,7 @@ const PlansPage = () => {
                 // User is signed in, see docs for a list of available properties
                 // https://firebase.google.com/docs/reference/js/auth.user
                 const uid = user.uid;
-                setUser(user)
+                console.log("User logged in")
                 const q = query(collection(db, "users"), where("uid", "==", user?.uid));
                 const unsubscribe = onSnapshot(q, (querySnapshot) => {
                     const users = [];
@@ -90,11 +93,17 @@ const PlansPage = () => {
         });
     }, [])
 
+    useEffect(() => {
+        if (user?.data?.membership?.status == true) {
+            navigate('/members')
+        }
+    }, [user])
+
     return (
         <div className="bg-2 flex justify-center items-center min-h-screen bg-cover bg-no-repeat py-3">
             <div className="flex items-center justify-center gap-4 flex-wrap">
                 <div className="bg-white p-2 rounded-lg flex-col gap-y-2 w-[375px]">
-                    <div><img src={goldImg} alt="" className="w-56 block m-auto" /></div>
+                    <div><img src={goldImg} alt="" className="w-full block m-auto" /></div>
                     <div className="flex flex-col gap-y-2 my-2">
                         <h1 className="font-bold text-center text-[25px]">Gold</h1>
                         <p className="text-center">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Neque debitis magnam similique ad nisi dolores doloribus laboriosam dolorem molestias! Modi perspiciatis facere aliquid dolores amet veniam asperiores, nisi iure quas.</p>
@@ -105,7 +114,7 @@ const PlansPage = () => {
                     </button>
                 </div>
                 <div className="bg-white p-2 rounded-lg flex-col gap-y-2 w-[375px]">
-                    <div><img src={platinumImg} alt="" className="w-56 block m-auto" /></div>
+                    <div><img src={platinumImg} alt="" className="w-full block m-auto" /></div>
                     <div className="flex flex-col gap-y-2 my-2">
                         <h1 className="font-bold text-center text-[25px]">Platinum</h1>
                         <p className="text-center">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Neque debitis magnam similique ad nisi dolores doloribus laboriosam dolorem molestias! Modi perspiciatis facere aliquid dolores amet veniam asperiores, nisi iure quas.</p>
@@ -116,7 +125,7 @@ const PlansPage = () => {
                     </button>
                 </div>
                 <div className="bg-white p-2 rounded-lg flex-col gap-y-2 w-[375px]">
-                    <div><img src={titaniumImg} alt="" className="w-56 block m-auto" /></div>
+                    <div><img src={titaniumImg} alt="" className="w-full block m-auto" /></div>
                     <div className="flex flex-col gap-y-2 my-2">
                         <h1 className="font-bold text-center text-[25px]">Titanium</h1>
                         <p className="text-center">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Neque debitis magnam similique ad nisi dolores doloribus laboriosam dolorem molestias! Modi perspiciatis facere aliquid dolores amet veniam asperiores, nisi iure quas.</p>
