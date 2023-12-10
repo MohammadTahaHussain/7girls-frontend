@@ -4,7 +4,7 @@ import platinumImg from '../assets/images/pro.png'
 import titaniumImg from '../assets/images/business.png'
 import { onAuthStateChanged } from 'firebase/auth'
 import { useEffect, useState } from "react"
-import { collection, query, where, onSnapshot, doc, updateDoc } from "firebase/firestore";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { auth, db } from "../configs/firebase"
 import { useNavigate } from "react-router-dom"
 import { signOut } from "firebase/auth";
@@ -51,17 +51,6 @@ const PlansPage = () => {
 
             // Assuming the server response is a URL
             const data = await res.json();
-            const saveData = async () => {
-                const docRef = doc(db, "users", user?.id);
-                console.log(docRef)
-                await updateDoc(docRef, {
-                    membership: {
-                        status: true,
-                        plan: plan
-                    }
-                });
-                return true
-            }
             // saveData().then(() => {
 
             window.location = data.url;
@@ -93,7 +82,7 @@ const PlansPage = () => {
                 });
                 // ...
             } else {
-                // User is signed out
+                // User is signed out   
                 setUser(null)
                 navigate("/")
                 // ...
@@ -103,9 +92,13 @@ const PlansPage = () => {
 
     useEffect(() => {
         if (user?.data?.membership?.status == true) {
-            navigate('/members')
+            // navigate('/members')
         }
     }, [user])
+
+    useEffect(() => {
+    })
+    
 
     return (
         <div className="bg-2 flex justify-center items-center min-h-screen bg-cover bg-no-repeat py-3">

@@ -44,7 +44,7 @@ const Success = () => {
             }
           }
           saveData().then(() => {
-            navigate("/members")
+            navigate("/members", { replace: true });
           })
         });
         // ...
