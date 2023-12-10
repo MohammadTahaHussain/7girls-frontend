@@ -70,6 +70,7 @@ const SignupPage = () => {
             } else {
                 // User is signed out
                 // ...
+                console.log("User not found")
             }
         });
     }, [])

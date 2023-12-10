@@ -3,9 +3,20 @@ import { collection, query, where, onSnapshot, doc, updateDoc } from "firebase/f
 import { db, auth } from '../configs/firebase'
 import { onAuthStateChanged } from 'firebase/auth'
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { signOut } from 'firebase/auth';
 
 const MembersPage = () => {
     const [members, setMembers] = useState([])
+    const navigate = useNavigate()
+
+    const logout = () => {
+        signOut(auth).then(() => {
+            // Sign-out successful.
+        }).catch((error) => {
+            // An error happened.
+        });
+    }
 
     const getUserData = (uid) => {
         const q = query(collection(db, "users"), where("uid", "==", uid));
@@ -37,19 +48,13 @@ const MembersPage = () => {
         });
     }
 
-
-
-
-
-
-
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 getUserData(user.uid)
             }
             else {
-                console.log(" user nto found")
+                navigate('/')
             }
         })
     }, [])
@@ -76,6 +81,7 @@ const MembersPage = () => {
                     })
                 }
             </div>
+            <button className="bg-pink-500 text-white absolute top-2 rounded p-2" onClick={logout}>Logout</button>
         </div>
     )
 }

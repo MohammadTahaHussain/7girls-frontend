@@ -7,14 +7,21 @@ import { useEffect, useState } from "react"
 import { collection, query, where, onSnapshot, doc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../configs/firebase"
 import { useNavigate } from "react-router-dom"
+import { signOut } from "firebase/auth";
+
 
 const PlansPage = () => {
     const [user, setUser] = useState(null)
     const navigate = useNavigate()
 
-    const name = "ITEMNAME";
-    const TotalPrice = 50;
-    const count = 3;
+    const logout = () => {
+        signOut(auth).then(() => {
+            // Sign-out successful.
+        }).catch((error) => {
+            // An error happened.
+        });
+    }
+
 
     const goToStripe = async (price, plan) => {
 
@@ -88,6 +95,7 @@ const PlansPage = () => {
             } else {
                 // User is signed out
                 setUser(null)
+                navigate("/")
                 // ...
             }
         });
@@ -136,6 +144,8 @@ const PlansPage = () => {
                     </button>
                 </div>
             </div>
+            <button className="bg-pink-500 text-white absolute top-2 rounded p-2" onClick={logout}>Logout</button>
+
         </div>
     )
 }
