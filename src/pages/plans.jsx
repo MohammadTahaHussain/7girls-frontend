@@ -20,7 +20,7 @@ const PlansPage = () => {
 
         try {
 
-            const res = await fetch("http://localhost:3002/auth/checkout", {
+            const res = await fetch("https://smiling-ant-overcoat.cyclic.app/auth/checkout", {
                 // const res = await fetch("http://localhost:4000/auth/checkout", {
                 method: "POST",
                 headers: {
