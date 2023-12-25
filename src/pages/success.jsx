@@ -4,62 +4,60 @@ import { db, auth } from '../configs/firebase'
 import { onAuthStateChanged } from 'firebase/auth'
 import { collection, query, where, onSnapshot, doc, updateDoc } from "firebase/firestore";
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios'
 
 const Success = () => {
   const location = useLocation()
   const [user, setUser] = useState(null)
   const navigate = useNavigate()
 
-  useEffect(() => {
-    const session_id = location.search?.split("=")[1]
+  const checkStatus = () => {
+    const sessionId = location.search?.split("=")[1]
     const plan = location.search?.split("=")[2]
     const uid = location.search?.split("=")[3]
-    console.log(session_id, plan, uid)
+    axios.post('https://smiling-ant-overcoat.cyclic.app/auth/session', null, {
+      params: {
+        session_id: sessionId.slice(0, -5),
+        plan: plan.slice(0, -4),
+        uid: uid
+      }
+    }).then((res) => {
+      navigate('/members')
+      console.log(res)
+    }).catch(e => {
+      console.log(e, 'error')
+    })
+  }
+
+  useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        // User is signed in, see docs for a list of available properties
-        // https://firebase.google.com/docs/reference/js/auth.user
-        const uid = user.uid;
-        const q = query(collection(db, "users"), where("uid", "==", user?.uid));
-        const unsubscribe = onSnapshot(q, (querySnapshot) => {
-          const users = [];
-          querySnapshot.forEach((doc) => {
-            users.push({
-              data: doc.data(),
-              id: doc.id
-            });
-          });
-          setUser(users[0])
-          const data = users[0]
-          const saveData = async () => {
-            const docRef = doc(db, "users", data.id);
-            if (session_id?.length > 10 && uid?.length > 10) {
-              await updateDoc(docRef, {
-                membership: {
-                  status: true,
-                  plan: plan.slice(0, -4),
-                  session_id: session_id
-                }
-              });
-            }
-          }
-          saveData().then(() => {
-            navigate("/members", { replace: true });
-          })
-        });
-        // ...
-      } else {
-        // User is signed out
-        setUser(null)
-        console.log("User not")
-        // ...
-      }
-    });
+        checkStatus()
+      } else (
+        console.log('User not found')
+      )
+    })
   }, [])
 
   return (
-    <div>
-      <h1>Success</h1>
+    <div className='min-h-screen flex justify-center items-center'>
+      <div class="bg-white p-6  md:mx-auto">
+        <svg viewBox="0 0 24 24" class="text-green-600 w-16 h-16 mx-auto my-6">
+          <path fill="currentColor"
+            d="M12,0A12,12,0,1,0,24,12,12.014,12.014,0,0,0,12,0Zm6.927,8.2-6.845,9.289a1.011,1.011,0,0,1-1.43.188L5.764,13.769a1,1,0,1,1,1.25-1.562l4.076,3.261,6.227-8.451A1,1,0,1,1,18.927,8.2Z">
+          </path>
+        </svg>
+        <div class="text-center">
+          <h3 class="md:text-2xl text-base text-gray-900 font-semibold text-center">Payment Done!</h3>
+          <p class="text-gray-600 my-2">Thank you for completing your secure online payment.</p>
+          <p> Have a great day!  </p>
+          <div class="py-10 text-center">
+            <a href="#" class="px-12 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3">
+              You will be redirect soon!
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
